@@ -4,6 +4,20 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class MobileCatalogJson(
+    val version: Int,
+    val materials: MaterialsCatalogJson,
+    val curriculum: CurriculumBundleJson,
+    val compass: List<CompassArticleJson>
+) {
+    fun isUsable(): Boolean = version == 1 &&
+        materials.base == "https://pub-2179773f096a4b76a772ec1317daec99.r2.dev/" &&
+        materials.extrasBase == "${materials.base}pdf-extra/" &&
+        materials.data.values.any { course -> course.subjects.values.any { it.pdfs.isNotEmpty() } } &&
+        curriculum.curriculumData.isNotEmpty() && compass.isNotEmpty()
+}
+
+@Serializable
 data class MaterialsCatalogJson(
     @SerialName("BASE") val base: String,
     @SerialName("EXTRAS_BASE") val extrasBase: String,

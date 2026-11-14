@@ -207,6 +207,7 @@ fun MaterialDetailScreen(
                 ) {
                     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Text(s("mdRateMaterial"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                        Text(s("ratingLocalNotice"), style = MaterialTheme.typography.bodySmall, color = pal.textMuted)
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
                             verticalAlignment = Alignment.CenterVertically

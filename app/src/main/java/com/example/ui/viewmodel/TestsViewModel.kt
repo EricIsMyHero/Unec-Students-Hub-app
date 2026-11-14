@@ -2,6 +2,7 @@ package com.example.ui.viewmodel
 
 import android.app.Application
 import android.net.Uri
+import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.model.ParseStats
@@ -11,6 +12,7 @@ import com.example.data.repository.CatalogRepository
 import com.example.data.repository.NewsRepository
 import com.example.data.repository.StudyRepository
 import com.example.domain.PdfTextExtractor
+import com.example.domain.DeadlineClock
 import com.example.domain.TestBankParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -203,10 +205,11 @@ class TestsViewModel(
 
     private fun startCountdown() {
         timerJob?.cancel()
+        val deadline = SystemClock.elapsedRealtime() + _state.value.remainingSeconds * 1000L
         timerJob = viewModelScope.launch {
             while (_state.value.phase == QuizPhase.ACTIVE && _state.value.remainingSeconds > 0) {
-                delay(1000L)
-                val next = _state.value.remainingSeconds - 1
+                delay(250L)
+                val next = DeadlineClock.remainingSeconds(deadline, SystemClock.elapsedRealtime())
                 _state.value = _state.value.copy(remainingSeconds = next)
                 if (next <= 0) {
                     finishQuiz()

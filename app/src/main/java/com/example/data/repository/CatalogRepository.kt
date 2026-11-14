@@ -7,30 +7,39 @@ import com.example.data.model.CurriculumMajorJson
 import com.example.data.model.MaterialAlias
 import com.example.data.model.MaterialItem
 import com.example.data.model.MaterialsCatalogJson
+import com.example.data.model.MobileCatalogJson
 import com.example.data.model.PdfTypeMeta
 import com.example.data.model.SubjectSummary
 import com.example.data.model.TestSourceFile
 import kotlinx.serialization.json.Json
 import java.net.URLEncoder
 import java.text.Normalizer
+import java.io.File
 
 class CatalogRepository(private val context: Context) {
 
     private val json = Json { ignoreUnknownKeys = true }
+    // Use one coherent snapshot for this process. A downloaded update takes effect
+    // on the next cold start so it cannot disrupt an active quiz or navigation.
+    private val cachedCatalog: MobileCatalogJson? = runCatching {
+        val file = File(context.filesDir, "mobile-catalog.json")
+        if (file.length() !in 1..MAX_CATALOG_BYTES) return@runCatching null
+        json.decodeFromString<MobileCatalogJson>(file.readText()).takeIf { it.isUsable() }
+    }.getOrNull()
 
     val materialsCatalog: MaterialsCatalogJson by lazy {
         val text = context.assets.open("materials.json").bufferedReader().use { it.readText() }
-        json.decodeFromString<MaterialsCatalogJson>(text)
+        cachedCatalog?.materials ?: json.decodeFromString<MaterialsCatalogJson>(text)
     }
 
     val curriculumBundle: CurriculumBundleJson by lazy {
         val text = context.assets.open("curriculum.json").bufferedReader().use { it.readText() }
-        json.decodeFromString<CurriculumBundleJson>(text)
+        cachedCatalog?.curriculum ?: json.decodeFromString<CurriculumBundleJson>(text)
     }
 
     val compassArticles: List<CompassArticleJson> by lazy {
         val text = context.assets.open("compass.json").bufferedReader().use { it.readText() }
-        json.decodeFromString<List<CompassArticleJson>>(text)
+        cachedCatalog?.compass ?: json.decodeFromString<List<CompassArticleJson>>(text)
     }
 
     val pdfTypes: Map<String, PdfTypeMeta> get() = materialsCatalog.pdfTypes
@@ -51,6 +60,7 @@ class CatalogRepository(private val context: Context) {
     )
 
     companion object {
+        const val MAX_CATALOG_BYTES = 2_000_000L
         const val TUDIFAK_KEY = "tudifak"
 
         private val TUDIFAK_SUBJECTS = setOf(

@@ -78,13 +78,12 @@ import com.example.ui.screens.RequestThreadScreen
 import com.example.ui.screens.RequestsScreen
 import com.example.ui.screens.SubjectDetailScreen
 import com.example.ui.screens.SupportScreen
-import com.example.ui.screens.TestsScreen
 import com.example.ui.screens.TimerScreen
+import com.example.ui.screens.WebsitePracticeScreen
 import com.example.ui.strings.LocalStrings
 import com.example.ui.strings.s
 import com.example.ui.theme.LocalUnecPalette
 import com.example.ui.viewmodel.MainViewModel
-import com.example.ui.viewmodel.TestsViewModel
 import com.example.ui.viewmodel.TimerViewModel
 
 private data class PrimaryNavItem(
@@ -115,7 +114,6 @@ fun MainShell(
     val requests by mainViewModel.materialRequests.collectAsState()
     val ratingsMap by mainViewModel.ratingsMap.collectAsState()
 
-    val testsViewModel: TestsViewModel = viewModel(factory = factory)
     val timerViewModel: TimerViewModel = viewModel(factory = factory)
 
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -303,13 +301,8 @@ fun MainShell(
                             )
                         }
 
-                        composable<TestsRoute> { backEntry ->
-                            val args = backEntry.toRoute<TestsRoute>()
-                            TestsScreen(
-                                viewModel = testsViewModel,
-                                catalogRepo = mainViewModel.catalogRepo,
-                                initialSubject = args.initialSubject
-                            )
+                        composable<TestsRoute> {
+                            WebsitePracticeScreen()
                         }
 
                         composable<GpaRoute> {

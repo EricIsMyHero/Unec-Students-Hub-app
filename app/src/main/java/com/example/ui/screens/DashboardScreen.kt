@@ -86,6 +86,9 @@ fun DashboardScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
+            item {
+                Text(s("dashboardLocalNotice"), style = MaterialTheme.typography.bodySmall, color = pal.textMuted)
+            }
             // Rank & XP + Streak
             item {
                 Surface(

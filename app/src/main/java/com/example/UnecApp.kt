@@ -10,13 +10,19 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.data.local.AppDatabase
 import com.example.data.local.PreferencesManager
 import com.example.data.repository.CatalogRepository
+import com.example.data.repository.CatalogUpdater
 import com.example.data.repository.NewsRepository
 import com.example.data.repository.StudyRepository
 import com.example.ui.viewmodel.MainViewModel
 import com.example.ui.viewmodel.TestsViewModel
 import com.example.ui.viewmodel.TimerViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class UnecApp : Application() {
+    private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     lateinit var catalogRepository: CatalogRepository
         private set
@@ -56,6 +62,7 @@ class UnecApp : Application() {
         val db = AppDatabase.getInstance(this)
         val prefs = PreferencesManager(this)
         catalogRepository = CatalogRepository(this)
+        appScope.launch { CatalogUpdater(this@UnecApp).refresh() }
         newsRepository = NewsRepository()
         studyRepository = StudyRepository(db, prefs)
         createNotificationChannel()

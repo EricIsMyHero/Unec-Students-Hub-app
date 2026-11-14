@@ -19,32 +19,30 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // Debug builds use the Android SDK's local debug key. Release APKs/AABs are
+    // unsigned unless a private, separately managed production key is configured.
     signingConfigs {
-        create("release") {
-            storeFile = file("${rootDir}/debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
-        }
-        create("debugConfig") {
-            storeFile = file("${rootDir}/debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
+        val path = System.getenv("UNEC_RELEASE_KEYSTORE")
+        if (!path.isNullOrBlank()) {
+            create("production") {
+                storeFile = file(path)
+                storePassword = System.getenv("UNEC_RELEASE_STORE_PASSWORD")
+                    ?: error("UNEC_RELEASE_STORE_PASSWORD is required")
+                keyAlias = System.getenv("UNEC_RELEASE_KEY_ALIAS")
+                    ?: error("UNEC_RELEASE_KEY_ALIAS is required")
+                keyPassword = System.getenv("UNEC_RELEASE_KEY_PASSWORD")
+                    ?: error("UNEC_RELEASE_KEY_PASSWORD is required")
+            }
         }
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.findByName("production")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-        }
-        debug {
-            signingConfig = signingConfigs.getByName("debugConfig")
         }
     }
 
@@ -60,6 +58,7 @@ android {
 }
 
 dependencies {
+    testImplementation("junit:junit:4.13.2")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)

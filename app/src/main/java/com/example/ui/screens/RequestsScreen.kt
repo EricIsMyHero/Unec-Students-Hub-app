@@ -42,12 +42,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.data.local.MaterialRequestEntity
 import com.example.data.local.RequestReplyEntity
 import com.example.ui.components.BadgePill
+import com.example.ui.components.IntentHelpers
 import com.example.ui.strings.s
 import com.example.ui.theme.LocalUnecPalette
 import kotlinx.coroutines.flow.Flow
@@ -63,6 +65,7 @@ fun RequestsScreen(
     modifier: Modifier = Modifier
 ) {
     val pal = LocalUnecPalette.current
+    val context = LocalContext.current
     var filter by remember { mutableStateOf("all") } // all, open, fulfilled
     var showCreate by remember { mutableStateOf(false) }
 
@@ -91,7 +94,11 @@ fun RequestsScreen(
                 ) {
                     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Text(s("reqPageTitle"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                        Text(s("reqHeroSub"), style = MaterialTheme.typography.bodySmall, color = pal.textMuted)
+                        Text(s("requestsLocalNotice"), style = MaterialTheme.typography.bodySmall, color = pal.textMuted)
+                        OutlinedButton(
+                            onClick = { IntentHelpers.openUrl(context, "https://unecstudentshub.com/#/requests") },
+                            modifier = Modifier.fillMaxWidth()
+                        ) { Text(s("requestsOpenWebsite")) }
                         Button(
                             onClick = { showCreate = true },
                             modifier = Modifier.fillMaxWidth().height(48.dp).testTag("req_new_btn"),
