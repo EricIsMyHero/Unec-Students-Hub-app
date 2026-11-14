@@ -1,0 +1,8 @@
+{
+  "name": "UNEC Hub",
+  "description": "UNEC Students Hub Android application featuring exam materials, automated practice tests, UNEC GPA calculator & target predictor, 15-major curriculum planner, bilingual Student Compass, Pomodoro study timer & exam countdowns, and student progress dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

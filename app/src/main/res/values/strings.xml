@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UNEC Hub</string>
+    <string name="timer_channel_name">Study Timer</string>
+    <string name="timer_channel_desc">Notifications for completed Pomodoro focus and break intervals</string>
+    <string name="hero_banner_desc">UNEC Students Hub campus illustration</string>
+    <string name="qr_birbank_desc">Birbank QR payment code</string>
+    <string name="qr_m10_desc">m10 QR payment code</string>
+</resources>

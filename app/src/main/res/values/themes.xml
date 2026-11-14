@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.UNECHub" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">#030B19</item>
+    </style>
+</resources>
